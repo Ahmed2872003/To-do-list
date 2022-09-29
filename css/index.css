@@ -2,15 +2,28 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   box-sizing: border-box;
   margin: 0;
+  display: flex;
+  justify-content: center;
+}
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 p {
   margin: 0;
 }
 .container {
   width: 50%;
-  margin: auto;
   margin-top: 50px;
+  margin-left: 30px;
+  margin-right: 30px;
 }
+@media (max-width: 769px) {
+  .container {
+    width: 100%;
+  }
+}
+
 .container > * {
   background-color: #f2f2f2;
   border-radius: 5px;
@@ -85,6 +98,7 @@ p {
   background-color: white;
   padding: 10px;
   margin: 10px 0;
+  overflow: scroll;
 }
 .tasks div .delete {
   border: none;
