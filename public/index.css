@@ -1,0 +1,40 @@
+.con {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  height: 100%;
+}
+form {
+  width: 50%;
+  background-color: transparent;
+  box-shadow: none;
+}
+img {
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+}
+@media (max-width: 767px) {
+  .con {
+    flex-direction: column;
+  }
+  img {
+    width: 100%;
+    border-radius: 0;
+  }
+  form {
+    width: 90%;
+  }
+}
+input {
+  background-color: white;
+  margin-bottom: 20px;
+  outline: none;
+}
+body {
+  height: 100vh;
+}
+.btn {
+  margin-top: 20px;
+}

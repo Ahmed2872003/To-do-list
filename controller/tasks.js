@@ -1,54 +1,56 @@
 const Task = require("../models/task.js");
 
-const asyncWrapper = require("../middleware/asyncWrapper.js");
+const { StatusCodes } = require("http-status-codes");
 
-const createCustomError = require("../errors/customErrors.js");
+const { createCustomError } = require("../errors/customErrors.js");
 // GET all the tasks
-const getAllTasks = asyncWrapper(async (req, res) => {
-  const tasks = await Task.find({});
-  res.status(200).send({ tasks });
-});
+const getAllTasks = async (req, res) => {
+  const tasks = await Task.find({ userID: req.user.ID });
+  res.status(StatusCodes.OK).send({ tasks });
+};
 
 // Create new task
 
-const createTask = asyncWrapper(async (req, res) => {
-  const task = await Task.create(req.body);
-  res.status(201).json({ task });
-});
+const createTask = async (req, res) => {
+  const task = await Task.create({ ...req.body, userID: req.user.ID });
+  res.status(StatusCodes.CREATED).json({ task });
+};
 
 // GET single task
 
-const getTask = asyncWrapper(async (req, res, next) => {
+const getTask = async (req, res, next) => {
   const { id } = req.params;
   const task = await Task.findById(id);
-  if (!task) return next(createCustomError(`No Task With id : ${id}`, 404));
-  res.status(200).json({ task });
-});
+  if (!task)
+    throw createCustomError(`No Task With id : ${id}`, StatusCodes.BAD_REQUEST);
+  res.status(StatusCodes.OK).json({ task });
+};
 
 // Update a task
 
-const updateTask = asyncWrapper(async (req, res, next) => {
+const updateTask = async (req, res, next) => {
   const { id } = req.params;
   const task = await Task.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
   });
-  if (!task) return next(createCustomError(`No Task With id : ${id}`, 404));
+  if (!task)
+    throw createCustomError(`No Task With id : ${id}`, StatusCodes.BAD_REQUEST);
 
-  res.status(200).json({ task });
-});
+  res.status(StatusCodes.OK).json({ task });
+};
 
 // DELETE a task
 
-const deleteTask = asyncWrapper(async (req, res, next) => {
+const deleteTask = async (req, res, next) => {
   const { id } = req.params;
 
   const task = await Task.findByIdAndDelete(id);
 
-  if (!task) return next(createCustomError(`No Task With id : ${id}`, 404));
-
-  res.status(200).json({ task });
-});
+  if (!task)
+    throw createCustomError(`No Task With id : ${id}`, StatusCodes.BAD_REQUEST);
+  res.status(StatusCodes.OK).json({ task });
+};
 
 module.exports = {
   getAllTasks,

@@ -9,4 +9,4 @@ function createCustomError(message, statusCode) {
   return new CustomAPIError(message, statusCode);
 }
 
-module.exports = createCustomError;
+module.exports = { createCustomError  , CustomAPIError};
