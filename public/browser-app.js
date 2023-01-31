@@ -6,6 +6,35 @@ const formAlertDOM = document.querySelector(".form-alert");
 const signoutBtn = document.getElementById("signoutBtn");
 const username = document.getElementById("username");
 const authorization = `Bearer ${localStorage.getItem("token")}`;
+const contentBar = document.getElementById("content");
+const menu = document.querySelector(".menu");
+const closeBtn = document.querySelector(".fa-xmark");
+const deleteAccountBtn = document.getElementById("deleteAccount");
+const deleteAllTasksBtn = document.getElementById("deleteAllTasks");
+// open, close content bar
+menu.onclick = () => {
+  content.classList.add("show");
+};
+closeBtn.onclick = () => {
+  content.classList.remove("show");
+};
+// delete Account
+deleteAccountBtn.onclick = async () => {
+  if (confirm("Are you sure that you want to delete your account")) {
+    try {
+      await axios.delete("/api/v1/user/delete-user", {
+        headers: {
+          authorization,
+        },
+      });
+      localStorage.removeItem("token");
+      window.open("/", "_self");
+    } catch (error) {
+      formAlertDOM.innerText = error.response.data.msg;
+      setTimeout(() => (formAlertDOM.innerText = ""), 1000);
+    }
+  }
+};
 // add username in header
 username.innerText = localStorage.getItem("username");
 
@@ -76,7 +105,23 @@ tasksDOM.addEventListener("click", async (e) => {
   }
   loadingDOM.style.visibility = "hidden";
 });
-
+// add success message in formAlert
+const successsMsg = (msg) => {
+  taskInputDOM.value = "";
+  formAlertDOM.classList.add("text-success");
+  formAlertDOM.textContent = msg;
+};
+// add failure message in formAlert
+const failureMsg = (msg) => {
+  formAlertDOM.classList.remove("text-success");
+  formAlertDOM.innerHTML = msg;
+};
+// remove  message in formAlert
+const removeMsg = () => {
+  setTimeout(() => {
+    formAlertDOM.textContent = "";
+  }, 3000);
+};
 // form
 
 formDOM.addEventListener("submit", async (e) => {
@@ -86,18 +131,11 @@ formDOM.addEventListener("submit", async (e) => {
   try {
     await axios.post("/api/v1/tasks", { name }, { headers: { authorization } });
     showTasks();
-    taskInputDOM.value = "";
-    formAlertDOM.style.display = "block";
-    formAlertDOM.textContent = `success, task added`;
-    formAlertDOM.classList.add("text-success");
+    successsMsg(`success, task added`);
   } catch (error) {
-    formAlertDOM.style.display = "block";
-    formAlertDOM.innerHTML = `error, please try again`;
+    failureMsg(`error, please try again`);
   }
-  setTimeout(() => {
-    formAlertDOM.style.display = "none";
-    formAlertDOM.classList.remove("text-success");
-  }, 3000);
+  removeMsg();
 });
 
 // signout button
@@ -106,4 +144,20 @@ signoutBtn.onclick = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("username");
   window.open("/", "_self");
+};
+
+// deleteAllTasksBtn
+deleteAllTasksBtn.onclick = async () => {
+  if (confirm("Are you sure that you want to delete all tasks")) {
+    try {
+      const {
+        data: { msg },
+      } = await axios.delete("/api/v1/tasks", { headers: { authorization } });
+      successsMsg(msg);
+      showTasks();
+    } catch (err) {
+      failureMsg(err.response.data.msg);
+    }
+    removeMsg();
+  }
 };

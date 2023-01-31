@@ -9,19 +9,31 @@
     <!-- normalize -->
     <link rel="stylesheet" href="./normalize.css" />
     <link rel="stylesheet" href="./main.css" />
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="./index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
     <title>Sign page</title>
   </head>
   <body>
+    <h1 id="title">Task manager</h1>
     <div class="con">
       <img src="./toDo.png" alt="ToDoList image" />
       <form id="signin">
         <div style="text-align: center" class="form-alert"></div>
         <label for="username">username</label>
         <input type="text" id="username" name="username" required />
+
         <label for="password" form="pass">password</label>
-        <input type="text" name="password" id="pass" required />
-        <button type="submit" class="btn">login</button>
+        <div id="container">
+          <i class="fa-solid fa-eye" id="toggleVisiblity"></i>
+          <input type="password" name="password" id="pass" required />
+        </div>
+
+        <button type="submit" class="btn" id="login">login</button>
+        <span>OR</span>
+        <button type="submit" class="btn" id="signup">Signup</button>
       </form>
     </div>
     <script

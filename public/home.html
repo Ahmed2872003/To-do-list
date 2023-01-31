@@ -15,12 +15,27 @@
     <link rel="stylesheet" href="./normalize.css" />
     <!-- main css -->
     <link rel="stylesheet" href="./main.css" />
+    <!-- Font awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
     <title>Task Manager</title>
   </head>
   <body>
     <header id="header">
       <div id="username"></div>
-      <button class="btn" id="signoutBtn">Signout</button>
+      <div class="wrapper">
+        <i class="fa-solid fa-bars menu btn hidden"></i>
+        <div id="content">
+          <i class="fa-solid fa-xmark btn hidden"></i>
+          <div id="btns">
+            <button class="btn" id="signoutBtn">Signout</button>
+            <button class="btn" id="deleteAccount">Delete account</button>
+            <button class="btn" id="deleteAllTasks">Delete all tasks</button>
+          </div>
+        </div>
+      </div>
     </header>
     <form class="task-form">
       <h4>task manager</h4>

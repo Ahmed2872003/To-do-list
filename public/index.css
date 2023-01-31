@@ -3,7 +3,6 @@
   justify-content: center;
   align-items: center;
   gap: 50px;
-  height: 100%;
 }
 form {
   width: 50%;
@@ -15,7 +14,7 @@ img {
   height: 400px;
   border-radius: 50%;
 }
-@media (max-width: 767px) {
+@media (max-width: 929px) {
   .con {
     flex-direction: column;
   }
@@ -32,9 +31,35 @@ input {
   margin-bottom: 20px;
   outline: none;
 }
+#pass {
+  margin: 0;
+}
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+#container i {
+  position: absolute;
+  right: 7px;
+  transition: 0.3s;
+}
+#container i:hover {
+  color: var(--primary-500);
+}
 body {
   height: 100vh;
 }
 .btn {
   margin-top: 20px;
+}
+#title {
+  text-align: center;
+  padding: 10px;
+  color: var(--primary-500);
+  font-weight: bold;
+}
+input {
+  display: inline;
 }

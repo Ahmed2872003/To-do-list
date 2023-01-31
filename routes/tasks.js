@@ -7,13 +7,10 @@ const {
   getTask,
   updateTask,
   deleteTask,
+  deleteAllTasks,
 } = require("../controller/tasks.js");
 
-const authenticationMiddleware = require("../middleware/auth.js");
-
-router.use(authenticationMiddleware);
-
-router.route("/").get(getAllTasks).post(createTask);
+router.route("/").get(getAllTasks).post(createTask).delete(deleteAllTasks);
 router.route("/:id").get(getTask).patch(updateTask).delete(deleteTask);
 
 module.exports = router;

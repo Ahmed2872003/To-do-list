@@ -76,6 +76,8 @@ body {
   font-family: var(--bodyFont);
   font-weight: 400;
   line-height: 1.75;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 p {
@@ -455,6 +457,53 @@ form > :last-child {
   color: var(--primary-500);
   font-size: 30px;
   font-weight: bold;
+}
+
+#btns > *:not(:first-child) {
+  margin-left: 10px;
+}
+.menu {
+  font-size: 25px;
+}
+.hidden {
+  display: none !important;
+}
+i {
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  #content {
+    position: fixed;
+    padding: 15px;
+    width: 300px;
+    height: 100%;
+    background-color: white;
+    top: 0;
+    right: -300px;
+    transition: 0.3s;
+  }
+  #btns {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  #btns .btn {
+    width: 100%;
+    margin: 0;
+  }
+  .menu {
+    display: block !important;
+  }
+  .hidden {
+    display: inline-block !important;
+  }
+  .fa-xmark {
+    margin-bottom: 20px;
+  }
+}
+.show {
+  right: 0 !important;
 }
 @media (max-width: 340px) {
   #header {

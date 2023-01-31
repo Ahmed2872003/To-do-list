@@ -3,6 +3,7 @@ const Task = require("../models/task.js");
 const { StatusCodes } = require("http-status-codes");
 
 const { createCustomError } = require("../errors/customErrors.js");
+const task = require("../models/task.js");
 // GET all the tasks
 const getAllTasks = async (req, res) => {
   const tasks = await Task.find({ userID: req.user.ID });
@@ -52,10 +53,23 @@ const deleteTask = async (req, res, next) => {
   res.status(StatusCodes.OK).json({ task });
 };
 
+const deleteAllTasks = async (req, res, next) => {
+  const { ID: userID } = req.user;
+  const { deletedCount } = await Task.deleteMany({ userID });
+  if (!deletedCount)
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ msg: "No tasks to delete" });
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: ` ${deletedCount} tasks Deleted Successfully` });
+};
+
 module.exports = {
   getAllTasks,
   createTask,
   getTask,
   updateTask,
   deleteTask,
+  deleteAllTasks,
 };
