@@ -28,6 +28,7 @@ deleteAccountBtn.onclick = async () => {
         },
       });
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       window.open("/", "_self");
     } catch (error) {
       formAlertDOM.innerText = error.response.data.msg;
