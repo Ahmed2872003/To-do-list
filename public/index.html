@@ -23,12 +23,26 @@
       <form id="signin">
         <div style="text-align: center" class="form-alert"></div>
         <label for="username">username</label>
-        <input type="text" id="username" name="username" required />
+        <input
+          type="text"
+          id="username"
+          name="username"
+          minlength="5"
+          maxlength="20"
+          required
+        />
 
         <label for="password" form="pass">password</label>
         <div id="container">
           <i class="fa-solid fa-eye" id="toggleVisiblity"></i>
-          <input type="password" name="password" id="pass" required />
+          <input
+            type="password"
+            name="password"
+            id="pass"
+            minlength="5"
+            maxlength="30"
+            required
+          />
         </div>
 
         <button type="submit" class="btn" id="login">login</button>
