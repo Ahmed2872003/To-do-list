@@ -23,7 +23,7 @@ loginBtn.onclick = async (event) => {
   }
   setTimeout(() => {
     formAlert.textContent = "";
-    formAlert.remove("text-success");
+    formAlert.classList.remove("text-success");
   }, 2000);
 };
 
@@ -41,7 +41,7 @@ signupBtn.onclick = async (event) => {
   }
   setTimeout(() => {
     formAlert.textContent = "";
-    formAlert.remove("text-success");
+    formAlert.classList.remove("text-success");
   }, 2000);
 };
 togglerInput.onclick = () => {
