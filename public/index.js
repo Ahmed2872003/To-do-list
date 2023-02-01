@@ -37,7 +37,9 @@ signupBtn.onclick = async (event) => {
     formAlert.textContent = msg;
     formAlert.classList.add("text-success");
   } catch (error) {
-    formAlert.textContent = error.response.data.msg;
+    formAlert.innerHTML = `${error.response.data.msg}<br />${
+      error.response.data.reason || ""
+    }`;
   }
   setTimeout(() => {
     formAlert.textContent = "";

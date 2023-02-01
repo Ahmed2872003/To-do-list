@@ -136,7 +136,7 @@ formDOM.addEventListener("submit", async (e) => {
     showTasks();
     successsMsg(`success, task added`);
   } catch (error) {
-    failureMsg(`error, please try again`);
+    failureMsg(error.response.data.msg);
   }
   removeMsg();
 });
