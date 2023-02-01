@@ -21,7 +21,10 @@ loginBtn.onclick = async (event) => {
   } catch (error) {
     formAlert.innerText = error.response.data.msg;
   }
-  setTimeout(() => (formAlert.innerText = ""), 2000);
+  setTimeout(() => {
+    formAlert.innerText = "";
+    formAlert.remove("text-success");
+  }, 2000);
 };
 
 signupBtn.onclick = async (event) => {
@@ -36,7 +39,10 @@ signupBtn.onclick = async (event) => {
   } catch (error) {
     formAlert.innerHTML = error.response.data.msg;
   }
-  setTimeout(() => (formAlert.innerHTML = ""), 2000);
+  setTimeout(() => {
+    formAlert.innerText = "";
+    formAlert.remove("text-success");
+  }, 2000);
 };
 togglerInput.onclick = () => {
   passInput.type = passInput.type === "text" ? "password" : "text";
