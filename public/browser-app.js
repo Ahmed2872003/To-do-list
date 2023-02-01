@@ -18,6 +18,24 @@ menu.onclick = () => {
 closeBtn.onclick = () => {
   content.classList.remove("show");
 };
+
+// add success message in formAlert
+const successsMsg = (msg) => {
+  taskInputDOM.value = "";
+  formAlertDOM.classList.add("text-success");
+  formAlertDOM.textContent = msg;
+};
+// add failure message in formAlert
+const failureMsg = (msg) => {
+  formAlertDOM.classList.remove("text-success");
+  formAlertDOM.innerHTML = msg;
+};
+// remove  message in formAlert
+const removeMsg = () => {
+  setTimeout(() => {
+    formAlertDOM.textContent = "";
+  }, 3000);
+};
 // delete Account
 deleteAccountBtn.onclick = async () => {
   if (confirm("Are you sure that you want to delete your account")) {
@@ -32,7 +50,7 @@ deleteAccountBtn.onclick = async () => {
       window.open("/", "_self");
     } catch (error) {
       formAlertDOM.innerText = error.response.data.msg;
-      setTimeout(() => (formAlertDOM.innerText = ""), 1000);
+      removeMsg();
     }
   }
 };
@@ -106,23 +124,7 @@ tasksDOM.addEventListener("click", async (e) => {
   }
   loadingDOM.style.visibility = "hidden";
 });
-// add success message in formAlert
-const successsMsg = (msg) => {
-  taskInputDOM.value = "";
-  formAlertDOM.classList.add("text-success");
-  formAlertDOM.textContent = msg;
-};
-// add failure message in formAlert
-const failureMsg = (msg) => {
-  formAlertDOM.classList.remove("text-success");
-  formAlertDOM.innerHTML = msg;
-};
-// remove  message in formAlert
-const removeMsg = () => {
-  setTimeout(() => {
-    formAlertDOM.textContent = "";
-  }, 3000);
-};
+
 // form
 
 formDOM.addEventListener("submit", async (e) => {

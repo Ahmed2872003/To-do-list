@@ -15,14 +15,14 @@ loginBtn.onclick = async (event) => {
 
     localStorage.setItem("token", token);
     localStorage.setItem("username", username);
-    formAlert.innerHTML = msg;
+    formAlert.textContent = msg;
     formAlert.classList.add("text-success");
     setTimeout(() => window.open("/home.html", "_self"), 1000);
   } catch (error) {
-    formAlert.innerText = error.response.data.msg;
+    formAlert.textContent = error.response.data.msg;
   }
   setTimeout(() => {
-    formAlert.innerText = "";
+    formAlert.textContent = "";
     formAlert.remove("text-success");
   }, 2000);
 };
@@ -34,13 +34,13 @@ signupBtn.onclick = async (event) => {
     const {
       data: { msg },
     } = await axios.post("/api/v1/user/signup", { username, password });
-    formAlert.innerHTML = msg;
+    formAlert.textContent = msg;
     formAlert.classList.add("text-success");
   } catch (error) {
-    formAlert.innerHTML = error.response.data.msg;
+    formAlert.textContent = error.response.data.msg;
   }
   setTimeout(() => {
-    formAlert.innerText = "";
+    formAlert.textContent = "";
     formAlert.remove("text-success");
   }, 2000);
 };
