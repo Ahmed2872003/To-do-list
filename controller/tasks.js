@@ -13,9 +13,23 @@ const getAllTasks = async (req, res) => {
 // Create new task
 
 const createTask = async (req, res) => {
+  const allTasks = await Task.find({ userID: req.user.ID });
+  if (allTasks.length) {
+    console.log("iam in");
+    const regex = /(?:[^A-za-z0-9]|_)+/g;
+    const simpleName = req.body.name.replace(regex, "").toLowerCase();
+    allTasks.forEach((task) => {
+      if (task.name.replace(regex, "").toLowerCase() === simpleName)
+        throw createCustomError(
+          "This task is already exist",
+          StatusCodes.CONFLICT
+        );
+    });
+  }
+
   const task = await Task.create({ ...req.body, userID: req.user.ID });
   res.status(StatusCodes.CREATED).json({ task });
-};
+}; // Learn NodeJS // learn_NOdejs // learnnodejs
 
 // GET single task
 
