@@ -40,7 +40,7 @@ const removeMsg = () => {
 deleteAccountBtn.onclick = async () => {
   if (confirm("Are you sure that you want to delete your account")) {
     try {
-      await axios.delete("/api/v1/user/delete-user", {
+      await axios.delete("/api/v1/user", {
         headers: {
           authorization,
         },

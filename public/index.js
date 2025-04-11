@@ -11,7 +11,7 @@ loginBtn.onclick = async (event) => {
   try {
     const {
       data: { msg, token },
-    } = await axios.post("/api/v1/user/signin", { username, password });
+    } = await axios.post("/api/v1/auth/signin", { username, password });
 
     localStorage.setItem("token", token);
     localStorage.setItem("username", username);
@@ -33,7 +33,7 @@ signupBtn.onclick = async (event) => {
   try {
     const {
       data: { msg },
-    } = await axios.post("/api/v1/user/signup", { username, password });
+    } = await axios.post("/api/v1/auth/signup", { username, password });
     formAlert.textContent = msg;
     formAlert.classList.add("text-success");
   } catch (error) {
