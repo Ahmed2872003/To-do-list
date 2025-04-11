@@ -8,7 +8,10 @@ const authenticationMiddleware = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer "))
-    throw createCustomError("No token provided", StatusCodes.UNAUTHORIZED);
+    throw createCustomError(
+      "Token error: No token provided",
+      StatusCodes.UNAUTHORIZED
+    );
   try {
     const decoded = jwt.verify(
       authorization.split(" ")[1],
@@ -20,7 +23,7 @@ const authenticationMiddleware = async (req, res, next) => {
     };
     next();
   } catch (error) {
-    throw createCustomError("UNAUTHORIZED REQUEST", StatusCodes.UNAUTHORIZED);
+    throw createCustomError("Token error", StatusCodes.UNAUTHORIZED);
   }
 };
 

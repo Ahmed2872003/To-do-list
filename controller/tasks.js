@@ -15,7 +15,6 @@ const getAllTasks = async (req, res) => {
 const createTask = async (req, res) => {
   const allTasks = await Task.find({ userID: req.user.ID });
   if (allTasks.length) {
-    console.log("iam in");
     const regex = /(?:[^A-za-z0-9]|_)+/g;
     const simpleName = req.body.name.replace(regex, "").toLowerCase();
     allTasks.forEach((task) => {

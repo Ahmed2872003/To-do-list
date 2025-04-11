@@ -1,3 +1,6 @@
+import "./utils/axios.js";
+import logout from "./utils/user/logout.js";
+
 const tasksDOM = document.querySelector(".tasks");
 const loadingDOM = document.querySelector(".loading-text");
 const formDOM = document.querySelector(".task-form");
@@ -40,11 +43,7 @@ const removeMsg = () => {
 deleteAccountBtn.onclick = async () => {
   if (confirm("Are you sure that you want to delete your account")) {
     try {
-      await axios.delete("/api/v1/user", {
-        headers: {
-          authorization,
-        },
-      });
+      await axios.delete("/user");
       localStorage.removeItem("token");
       localStorage.removeItem("username");
       window.open("/", "_self");
@@ -63,11 +62,7 @@ const showTasks = async () => {
   try {
     const {
       data: { tasks },
-    } = await axios.get("/api/v1/tasks", {
-      headers: {
-        authorization,
-      },
-    });
+    } = await axios.get("/tasks");
     if (tasks.length < 1) {
       tasksDOM.innerHTML = '<h5 class="empty-list">No tasks in your list</h5>';
       loadingDOM.style.visibility = "hidden";
@@ -112,11 +107,7 @@ tasksDOM.addEventListener("click", async (e) => {
     loadingDOM.style.visibility = "visible";
     const id = el.parentElement.dataset.id;
     try {
-      await axios.delete(`/api/v1/tasks/${id}`, {
-        headers: {
-          authorization,
-        },
-      });
+      await axios.delete(`/tasks/${id}`);
       showTasks();
     } catch (error) {
       console.log(error);
@@ -132,7 +123,7 @@ formDOM.addEventListener("submit", async (e) => {
   const name = taskInputDOM.value;
 
   try {
-    await axios.post("/api/v1/tasks", { name }, { headers: { authorization } });
+    await axios.post("/tasks", { name });
     showTasks();
     successsMsg(`success, task added`);
   } catch (error) {
@@ -144,9 +135,7 @@ formDOM.addEventListener("submit", async (e) => {
 // signout button
 
 signoutBtn.onclick = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("username");
-  window.open("/", "_self");
+  logout();
 };
 
 // deleteAllTasksBtn
@@ -155,7 +144,7 @@ deleteAllTasksBtn.onclick = async () => {
     try {
       const {
         data: { msg },
-      } = await axios.delete("/api/v1/tasks", { headers: { authorization } });
+      } = await axios.delete("/tasks");
       successsMsg(msg);
       showTasks();
     } catch (err) {

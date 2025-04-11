@@ -1,3 +1,5 @@
+import "./utils/axios.js";
+
 const taskIDDOM = document.querySelector(".task-edit-id");
 const taskNameDOM = document.querySelector(".task-edit-name");
 const taskCompletedDOM = document.querySelector(".task-edit-completed");
@@ -13,7 +15,7 @@ const showTask = async () => {
   try {
     const {
       data: { task },
-    } = await axios.get(`/api/v1/tasks/${id}`, { headers: { authorization } });
+    } = await axios.get(`/tasks/${id}`);
     const { _id: taskID, completed, name } = task;
 
     taskIDDOM.textContent = taskID;
@@ -38,14 +40,10 @@ editFormDOM.addEventListener("submit", async (e) => {
 
     const {
       data: { task },
-    } = await axios.patch(
-      `/api/v1/tasks/${id}`,
-      {
-        name: taskName,
-        completed: taskCompleted,
-      },
-      { headers: { authorization } }
-    );
+    } = await axios.patch(`/tasks/${id}`, {
+      name: taskName,
+      completed: taskCompleted,
+    });
 
     const { _id: taskID, completed, name } = task;
 

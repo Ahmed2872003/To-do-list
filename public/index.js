@@ -1,3 +1,5 @@
+import "./utils/axios.js";
+
 const signinForm = document.getElementById("#signin");
 const formAlert = document.querySelector(".form-alert");
 const usernameInput = document.getElementById("username");
@@ -5,16 +7,19 @@ const passInput = document.getElementById("pass");
 const loginBtn = document.getElementById("login");
 const signupBtn = document.getElementById("signup");
 const togglerInput = document.getElementById("toggleVisiblity");
+
 loginBtn.onclick = async (event) => {
   event.preventDefault();
   const [username, password] = [usernameInput.value, passInput.value];
   try {
     const {
-      data: { msg, token },
-    } = await axios.post("/api/v1/auth/signin", { username, password });
+      data: { msg, token, refreshToken },
+    } = await axios.post("/auth/signin", { username, password });
 
     localStorage.setItem("token", token);
+    localStorage.setItem("refreshToken", refreshToken);
     localStorage.setItem("username", username);
+
     formAlert.textContent = msg;
     formAlert.classList.add("text-success");
     setTimeout(() => window.open("/home.html", "_self"), 1000);
@@ -33,7 +38,7 @@ signupBtn.onclick = async (event) => {
   try {
     const {
       data: { msg },
-    } = await axios.post("/api/v1/auth/signup", { username, password });
+    } = await axios.post("/auth/signup", { username, password });
     formAlert.textContent = msg;
     formAlert.classList.add("text-success");
   } catch (error) {
