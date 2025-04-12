@@ -5,18 +5,15 @@ const { StatusCodes } = require("http-status-codes");
 const { createCustomError } = require("../errors/customErrors.js");
 
 const authenticationMiddleware = async (req, res, next) => {
-  const { authorization } = req.headers;
+  const { token } = req.cookies;
 
-  if (!authorization || !authorization.startsWith("Bearer "))
+  if (!token || !token.startsWith("Bearer "))
     throw createCustomError(
       "Token error: No token provided",
       StatusCodes.UNAUTHORIZED
     );
   try {
-    const decoded = jwt.verify(
-      authorization.split(" ")[1],
-      process.env.JWT_SECRET
-    );
+    const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
     req.user = {
       ID: decoded.userID,
       username: decoded.username,

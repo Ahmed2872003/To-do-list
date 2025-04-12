@@ -3,8 +3,23 @@ const User = require("../models/user.js");
 const { StatusCodes } = require("http-status-codes");
 const { createCustomError } = require("../errors/customErrors.js");
 
-const tokenTime = "1d";
-const refreshTokenTime = "7d";
+const tokenTimeSec = 30 * 60;
+const refreshTokenTimeSec = 7 * 24 * 60 * 60;
+
+const cookieConfig = {
+  httpOnly: true,
+  sameSite: "Strict",
+  path: "/",
+};
+
+const tokenCookieConfig = {
+  ...cookieConfig,
+};
+
+const refTokenCookieConfig = {
+  ...cookieConfig,
+  path: "/api/v1/auth/token",
+};
 
 const signup = async (req, res) => {
   if (await User.count({ username: req.body.username }))
@@ -18,6 +33,7 @@ const signup = async (req, res) => {
 const signin = async (req, res) => {
   const { username, password } = req.body;
   const [user] = await User.find({ username });
+
   if (!user)
     throw createCustomError("User doesn't exist", StatusCodes.NOT_FOUND);
 
@@ -27,20 +43,35 @@ const signin = async (req, res) => {
   const payload = { username, userID: user._id };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: tokenTime,
+    expiresIn: tokenTimeSec,
   });
 
   const refreshToken = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: refreshTokenTime,
+    expiresIn: refreshTokenTimeSec,
   });
 
-  res
-    .status(StatusCodes.OK)
-    .json({ msg: "Signedin successfully", token, refreshToken });
+  res.cookie("token", "Bearer " + token, {
+    ...tokenCookieConfig,
+    expires: new Date(Date.now() + tokenTimeSec * 1000),
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    ...refTokenCookieConfig,
+    expires: new Date(Date.now() + refreshTokenTimeSec * 1000),
+  });
+
+  res.status(StatusCodes.OK).json({ msg: "Signedin successfully" });
+};
+
+const logout = async (req, res) => {
+  res.clearCookie("token");
+  res.clearCookie("refreshToken", { path: "/api/v1/auth/token" });
+
+  res.sendStatus(StatusCodes.OK);
 };
 
 const generateNewToken = async (req, res) => {
-  const { refreshToken } = req.body;
+  const { refreshToken } = req.cookies;
 
   if (!refreshToken)
     throw new createCustomError(
@@ -55,10 +86,15 @@ const generateNewToken = async (req, res) => {
     delete payload["exp"];
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: tokenTime,
+      expiresIn: tokenTimeSec,
     });
 
-    res.status(200).json({ token });
+    res.cookie("token", "Bearer " + token, {
+      ...tokenCookieConfig,
+      expires: new Date(Date.now() + tokenTimeSec * 1000),
+    });
+
+    res.sendStatus(StatusCodes.OK);
   } catch (err) {
     throw createCustomError("Refresh token error", StatusCodes.UNAUTHORIZED);
   }
@@ -67,5 +103,6 @@ const generateNewToken = async (req, res) => {
 module.exports = {
   signup,
   signin,
+  logout,
   generateNewToken,
 };

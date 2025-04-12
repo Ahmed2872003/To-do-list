@@ -1,6 +1,5 @@
-const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("refreshToken");
+const logout = async () => {
+  await axios.post("/auth/logout");
   localStorage.removeItem("username");
   window.open("/", "_self");
 };
