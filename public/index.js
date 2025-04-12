@@ -8,16 +8,20 @@ const loginBtn = document.getElementById("login");
 const signupBtn = document.getElementById("signup");
 const togglerInput = document.getElementById("toggleVisiblity");
 
+const signOneCheck = async () => {
+  if (localStorage.getItem("username")) window.open("/home.html", "_self");
+};
+
+signOneCheck();
+
 loginBtn.onclick = async (event) => {
   event.preventDefault();
   const [username, password] = [usernameInput.value, passInput.value];
   try {
     const {
-      data: { msg, token, refreshToken },
+      data: { msg },
     } = await axios.post("/auth/signin", { username, password });
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("refreshToken", refreshToken);
     localStorage.setItem("username", username);
 
     formAlert.textContent = msg;
@@ -51,6 +55,7 @@ signupBtn.onclick = async (event) => {
     formAlert.classList.remove("text-success");
   }, 2000);
 };
+
 togglerInput.onclick = () => {
   passInput.type = passInput.type === "text" ? "password" : "text";
 };

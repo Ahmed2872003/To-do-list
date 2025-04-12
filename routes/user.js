@@ -2,7 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
-const { deleteUser } = require("../controller/user.js");
+const { getUser, deleteUser } = require("../controller/user.js");
 
-router.route("/").delete(deleteUser);
+router.route("/").get(getUser).delete(deleteUser);
+
 module.exports = router;
