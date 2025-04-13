@@ -1,4 +1,4 @@
-import "./utils/axios.js";
+import taskService from "../services/task.js";
 
 const taskIDDOM = document.querySelector(".task-edit-id");
 const taskNameDOM = document.querySelector(".task-edit-name");
@@ -13,10 +13,9 @@ const authorization = `Bearer ${localStorage.getItem("token")}`;
 
 const showTask = async () => {
   try {
-    const {
-      data: { task },
-    } = await axios.get(`/tasks/${id}`);
-    const { _id: taskID, completed, name } = task;
+    const resBody = await taskService.getTask(id);
+
+    const { _id: taskID, completed, name } = resBody.task;
 
     taskIDDOM.textContent = taskID;
     taskNameDOM.value = name;
@@ -38,14 +37,12 @@ editFormDOM.addEventListener("submit", async (e) => {
     const taskName = taskNameDOM.value;
     const taskCompleted = taskCompletedDOM.checked;
 
-    const {
-      data: { task },
-    } = await axios.patch(`/tasks/${id}`, {
+    const resBody = await taskService.updateTask(id, {
       name: taskName,
       completed: taskCompleted,
     });
 
-    const { _id: taskID, completed, name } = task;
+    const { _id: taskID, completed, name } = resBody.task;
 
     taskIDDOM.textContent = taskID;
     taskNameDOM.value = name;

@@ -3,8 +3,8 @@ const User = require("../models/user.js");
 const { StatusCodes } = require("http-status-codes");
 const { createCustomError } = require("../errors/customErrors.js");
 
-const tokenTimeSec = 30 * 60;
-const refreshTokenTimeSec = 7 * 24 * 60 * 60;
+const tokenTimeSec = 30 * 60; // 30 minute
+const refreshTokenTimeSec = 7 * 24 * 60 * 60; // 7 days
 
 const cookieConfig = {
   httpOnly: true,

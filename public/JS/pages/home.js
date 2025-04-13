@@ -1,5 +1,7 @@
-import "./utils/axios.js";
-import logout from "./utils/user/logout.js";
+import "../API/axios.js";
+import userService from "../services/user.js";
+import accountService from "../services/account.js";
+import taskService from "../services/task.js";
 
 const tasksDOM = document.querySelector(".tasks");
 const loadingDOM = document.querySelector(".loading-text");
@@ -43,10 +45,7 @@ const removeMsg = () => {
 deleteAccountBtn.onclick = async () => {
   if (confirm("Are you sure that you want to delete your account")) {
     try {
-      await axios.delete("/user");
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      window.open("/", "_self");
+      await accountService.removeAccount();
     } catch (error) {
       formAlertDOM.innerText = error.response.data.msg;
       removeMsg();
@@ -60,15 +59,14 @@ username.innerText = localStorage.getItem("username");
 const showTasks = async () => {
   loadingDOM.style.visibility = "visible";
   try {
-    const {
-      data: { tasks },
-    } = await axios.get("/tasks");
-    if (tasks.length < 1) {
+    const resBody = await taskService.getTasks();
+
+    if (resBody.tasks.length < 1) {
       tasksDOM.innerHTML = '<h5 class="empty-list">No tasks in your list</h5>';
       loadingDOM.style.visibility = "hidden";
       return;
     }
-    const allTasks = tasks
+    const allTasks = resBody.tasks
       .map((task) => {
         const { completed, _id: taskID, name } = task;
         return `<div class="single-task ${completed && "task-completed"}">
@@ -107,7 +105,7 @@ tasksDOM.addEventListener("click", async (e) => {
     loadingDOM.style.visibility = "visible";
     const id = el.parentElement.dataset.id;
     try {
-      await axios.delete(`/tasks/${id}`);
+      await taskService.deleteTask(id);
       showTasks();
     } catch (error) {
       console.log(error);
@@ -116,14 +114,14 @@ tasksDOM.addEventListener("click", async (e) => {
   loadingDOM.style.visibility = "hidden";
 });
 
-// form
+// Add task
 
 formDOM.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = taskInputDOM.value;
 
   try {
-    await axios.post("/tasks", { name });
+    await taskService.createTask({ name });
     showTasks();
     successsMsg(`success, task added`);
   } catch (error) {
@@ -134,18 +132,16 @@ formDOM.addEventListener("submit", async (e) => {
 
 // signout button
 
-signoutBtn.onclick = () => {
-  logout();
+signoutBtn.onclick = async () => {
+  await userService.logout();
 };
 
 // deleteAllTasksBtn
 deleteAllTasksBtn.onclick = async () => {
   if (confirm("Are you sure that you want to delete all tasks")) {
     try {
-      const {
-        data: { msg },
-      } = await axios.delete("/tasks");
-      successsMsg(msg);
+      const resBody = await taskService.deleteAllTasks();
+      successsMsg(resBody.msg);
       showTasks();
     } catch (err) {
       failureMsg(err.response.data.msg);

@@ -1,4 +1,4 @@
-import "./utils/axios.js";
+import userService from "../services/user.js";
 
 const signinForm = document.getElementById("#signin");
 const formAlert = document.querySelector(".form-alert");
@@ -8,25 +8,23 @@ const loginBtn = document.getElementById("login");
 const signupBtn = document.getElementById("signup");
 const togglerInput = document.getElementById("toggleVisiblity");
 
-const signOneCheck = async () => {
-  if (localStorage.getItem("username")) window.open("/home.html", "_self");
+const homePagePath = "../../pages/home.html";
+
+const singleSigninCheck = async () => {
+  if (localStorage.getItem("username")) window.open(homePagePath, "_self");
 };
 
-signOneCheck();
+singleSigninCheck();
 
 loginBtn.onclick = async (event) => {
   event.preventDefault();
   const [username, password] = [usernameInput.value, passInput.value];
   try {
-    const {
-      data: { msg },
-    } = await axios.post("/auth/signin", { username, password });
+    const resBody = await userService.signin({ username, password });
 
-    localStorage.setItem("username", username);
-
-    formAlert.textContent = msg;
+    formAlert.textContent = resBody.msg;
     formAlert.classList.add("text-success");
-    setTimeout(() => window.open("/home.html", "_self"), 1000);
+    setTimeout(() => window.open(homePagePath, "_self"), 1000);
   } catch (error) {
     formAlert.textContent = error.response.data.msg;
   }
@@ -40,10 +38,9 @@ signupBtn.onclick = async (event) => {
   event.preventDefault();
   const [username, password] = [usernameInput.value, passInput.value];
   try {
-    const {
-      data: { msg },
-    } = await axios.post("/auth/signup", { username, password });
-    formAlert.textContent = msg;
+    const resBody = await userService.signup({ username, password });
+
+    formAlert.textContent = resBody.msg;
     formAlert.classList.add("text-success");
   } catch (error) {
     formAlert.innerHTML = `${error.response.data.msg}<br />${
