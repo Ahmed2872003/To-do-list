@@ -22,7 +22,9 @@ const refTokenCookieConfig = {
 };
 
 const signup = async (req, res) => {
-  if (await User.count({ username: req.body.username }))
+  const userWithSameName = await User.findOne({ username: req.body.username });
+
+  if (userWithSameName)
     throw createCustomError("That username was taken", StatusCodes.CONFLICT);
 
   const user = await User.create(req.body);
@@ -32,12 +34,12 @@ const signup = async (req, res) => {
 
 const signin = async (req, res) => {
   const { username, password } = req.body;
-  const [user] = await User.find({ username });
+  const user = await User.findOne({ username });
 
   if (!user)
     throw createCustomError("User doesn't exist", StatusCodes.NOT_FOUND);
 
-  if (password !== user.password)
+  if (!user.comparePass(password))
     throw createCustomError("Wrong password", StatusCodes.UNAUTHORIZED);
 
   const payload = { username, userID: user._id };
