@@ -37,19 +37,11 @@ editFormDOM.addEventListener("submit", async (e) => {
     const taskName = taskNameDOM.value;
     const taskCompleted = taskCompletedDOM.checked;
 
-    const resBody = await taskService.updateTask(id, {
+    await taskService.updateTask(id, {
       name: taskName,
       completed: taskCompleted,
     });
 
-    const { _id: taskID, completed, name } = resBody.task;
-
-    taskIDDOM.textContent = taskID;
-    taskNameDOM.value = name;
-    tempName = name;
-    if (completed) {
-      taskCompletedDOM.checked = true;
-    }
     formAlertDOM.style.display = "block";
     formAlertDOM.textContent = `success, edited task`;
     formAlertDOM.classList.add("text-success");

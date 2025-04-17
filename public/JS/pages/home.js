@@ -118,10 +118,10 @@ tasksDOM.addEventListener("click", async (e) => {
 
 formDOM.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const name = taskInputDOM.value;
+  const formData = new FormData(e.target);
 
   try {
-    await taskService.createTask({ name });
+    await taskService.createTask({ name: formData.get("name") });
     showTasks();
     successsMsg(`success, task added`);
   } catch (error) {
