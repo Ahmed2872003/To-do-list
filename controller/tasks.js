@@ -1,6 +1,6 @@
 const Task = require("../models/task.js");
 
-const { publicEncryption } = require("../utils/crypto");
+const { publicEncryption, privateDecryption } = require("../utils/crypto");
 
 const { StatusCodes } = require("http-status-codes");
 
@@ -24,6 +24,13 @@ const getAllTasks = async (req, res) => {
 };
 
 const createTask = async (req, res) => {
+  req.body.name = privateDecryption(
+    process.env.SERVER_PRIVATE_KEY,
+    Buffer.from(req.body.name, "base64")
+  );
+
+  console.log(req.body);
+
   await Task.create({ ...req.body, userID: req.user.ID });
 
   res.sendStatus(StatusCodes.CREATED);

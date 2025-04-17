@@ -1,5 +1,3 @@
-const crypto = require("crypto");
-
 const getPublicKey = async (req, res) => {
   res.json({
     publicKey: Buffer.from(process.env.SERVER_PUBLIC_KEY).toString("base64"),

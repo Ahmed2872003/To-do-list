@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const { log } = require("console");
 const crypto = require("crypto");
 
 const validateData = (data) => (Buffer.isBuffer(data) ? true : false);
@@ -35,4 +36,10 @@ const publicEncryption = (pbKey, data) => {
   return crypto.publicEncrypt(pbKey, data).toString("base64");
 };
 
-module.exports = { encrypt, decrypt, publicEncryption };
+const privateDecryption = (privateKey, encryptedData) => {
+  if (!validateData(encryptedData)) throw new Error("data must be a buffer");
+
+  return crypto.privateDecrypt(privateKey, encryptedData).toString("utf-8");
+};
+
+module.exports = { encrypt, decrypt, publicEncryption, privateDecryption };
