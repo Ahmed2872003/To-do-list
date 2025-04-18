@@ -1,6 +1,3 @@
-require("dotenv").config();
-
-const { log } = require("console");
 const crypto = require("crypto");
 
 const validateData = (data) => (Buffer.isBuffer(data) ? true : false);

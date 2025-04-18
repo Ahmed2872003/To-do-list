@@ -60,10 +60,16 @@ const getTask = async (req, res, next) => {
 
 const updateTask = async (req, res, next) => {
   const { id } = req.params;
+
   const task = await Task.findById(id);
 
   if (!task)
     throw createCustomError(`No Task With id : ${id}`, StatusCodes.BAD_REQUEST);
+
+  req.body.name = privateDecryption(
+    process.env.SERVER_PRIVATE_KEY,
+    Buffer.from(req.body.name, "base64")
+  );
 
   Object.assign(task, req.body);
 

@@ -17,6 +17,7 @@ const signup = async (user) => {
 const logout = async () => {
   await axios.post("/auth/logout");
   localStorage.removeItem("username");
+  localStorage.removeItem("serverPublicKey");
 
   if (window.location.pathname !== "/") window.open("/", "_self");
 };

@@ -1,4 +1,7 @@
 import userService from "../services/user.js";
+import keyService from "../services/key.js";
+
+import "../utils/crypto.js";
 
 const signinForm = document.getElementById("#signin");
 const formAlert = document.querySelector(".form-alert");
@@ -22,9 +25,14 @@ loginBtn.onclick = async (event) => {
   try {
     const resBody = await userService.signin({ username, password });
 
+    const { publicKey: serverPublicKey } =
+      await keyService.getServerPublickKey();
+
+    localStorage.setItem("serverPublicKey", serverPublicKey);
+
     formAlert.textContent = resBody.msg;
     formAlert.classList.add("text-success");
-    setTimeout(() => window.open(homePagePath, "_self"), 1000);
+    // setTimeout(() => window.open(homePagePath, "_self"), 1000);
   } catch (error) {
     formAlert.textContent = error.response.data.msg;
   }
