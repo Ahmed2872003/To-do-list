@@ -42,7 +42,7 @@ const signin = async (req, res) => {
   if (!user.comparePass(password))
     throw createCustomError("Wrong password", StatusCodes.UNAUTHORIZED);
 
-  const payload = { username, userID: user._id };
+  const payload = { username, userID: user._id.toString() };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: tokenTimeSec,

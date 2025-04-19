@@ -55,12 +55,12 @@ const generateRSAKeys = async () => {
   const keyPair = await window.crypto.subtle.generateKey(
     {
       name: "RSA-OAEP",
-      modulusLength: 2048, // can be 1024, 2048, or 4096
-      publicExponent: new Uint8Array([1, 0, 1]), // 0x10001
+      modulusLength: 2048,
+      publicExponent: new Uint8Array([1, 0, 1]),
       hash: "SHA-256",
     },
-    true, // whether the key is extractable (can be exported)
-    ["encrypt", "decrypt"] // can also use "sign"/"verify" for RSA-PSS or RSASSA-PKCS1-v1_5
+    true,
+    ["encrypt", "decrypt"]
   );
 
   return keyPair;

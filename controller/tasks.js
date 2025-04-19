@@ -37,21 +37,13 @@ const createTask = async (req, res) => {
 
 const getTask = async (req, res, next) => {
   const { publicKey: clientPublicKeyB64 } = req.query;
+  const task = req.task.toObject();
 
   const clientPbKey = Buffer.from(clientPublicKeyB64, "base64").toString(
     "utf-8"
   );
 
-  const { id } = req.params;
-
-  let task = await Task.findById(id);
-
-  if (!task)
-    throw createCustomError(`No Task With id : ${id}`, StatusCodes.BAD_REQUEST);
-
-  task = task.toObject();
-
-  encryptedTask = {
+  const encryptedTask = {
     ...task,
     name: publicEncryption(clientPbKey, Buffer.from(task.name, "utf-8")),
   };
@@ -60,12 +52,7 @@ const getTask = async (req, res, next) => {
 };
 
 const updateTask = async (req, res, next) => {
-  const { id } = req.params;
-
-  const task = await Task.findById(id);
-
-  if (!task)
-    throw createCustomError(`No Task With id : ${id}`, StatusCodes.BAD_REQUEST);
+  const { task } = req;
 
   req.body.name = privateDecryption(
     process.env.SERVER_PRIVATE_KEY,
@@ -80,9 +67,9 @@ const updateTask = async (req, res, next) => {
 };
 
 const deleteTask = async (req, res, next) => {
-  const { id } = req.params;
+  const { task } = req;
 
-  await Task.findOneAndRemove({ _id: id, userID: req.user.ID });
+  await task.remove();
 
   res.sendStatus(StatusCodes.OK);
 };

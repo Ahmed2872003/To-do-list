@@ -7,8 +7,6 @@ const errorHandler = (err, req, res, next) => {
     else return res.sendStatus(err.statusCode);
   }
 
-  console.log(err);
-
   if (err.code === 11000) {
     let errMsg = "";
 

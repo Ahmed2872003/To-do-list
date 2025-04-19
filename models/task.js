@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-const cryptoUtil = require("../utils/crypto.js");
-
 const taskCrypto = require("../utils/taskCrypto.js");
 
 const taskSchema = new mongoose.Schema({

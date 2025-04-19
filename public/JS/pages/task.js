@@ -34,6 +34,11 @@ function startTaskScript() {
         taskCompletedDOM.checked = true;
       }
     } catch (error) {
+      if (error.response) {
+        if (error.response.status === 403) {
+          window.location.href = "../../pages/forbidden.html";
+        }
+      }
       console.log(error);
     }
   };

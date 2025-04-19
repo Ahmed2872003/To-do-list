@@ -10,7 +10,15 @@ const {
   deleteAllTasks,
 } = require("../controller/tasks.js");
 
+const taskOwnership = require("../middleware/taskOwnership.js");
+
 router.route("/").get(getAllTasks).post(createTask).delete(deleteAllTasks);
-router.route("/:id").get(getTask).patch(updateTask).delete(deleteTask);
+
+router
+  .route("/:id")
+  .all(taskOwnership)
+  .get(getTask)
+  .patch(updateTask)
+  .delete(deleteTask);
 
 module.exports = router;
