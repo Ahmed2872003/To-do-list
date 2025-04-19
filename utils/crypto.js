@@ -30,13 +30,25 @@ const decrypt = (config, encryptedData) => {
 const publicEncryption = (pbKey, data) => {
   if (!validateData(data)) throw new Error("data must be a buffer");
 
-  return crypto.publicEncrypt(pbKey, data).toString("base64");
+  const config = {
+    key: pbKey,
+    padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+    oaepHash: "sha256",
+  };
+
+  return crypto.publicEncrypt(config, data).toString("base64");
 };
 
 const privateDecryption = (privateKey, encryptedData) => {
   if (!validateData(encryptedData)) throw new Error("data must be a buffer");
 
-  return crypto.privateDecrypt(privateKey, encryptedData).toString("utf-8");
+  const config = {
+    key: privateKey,
+    padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+    oaepHash: "sha256",
+  };
+
+  return crypto.privateDecrypt(config, encryptedData).toString("utf-8");
 };
 
 module.exports = { encrypt, decrypt, publicEncryption, privateDecryption };

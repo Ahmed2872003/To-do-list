@@ -1,6 +1,8 @@
 import userService from "../services/user.js";
 import keyService from "../services/key.js";
 
+import loadKeys from "../utils/load-keys.js";
+
 import "../utils/crypto.js";
 
 const signinForm = document.getElementById("#signin");
@@ -32,7 +34,7 @@ loginBtn.onclick = async (event) => {
 
     formAlert.textContent = resBody.msg;
     formAlert.classList.add("text-success");
-    // setTimeout(() => window.open(homePagePath, "_self"), 1000);
+    setTimeout(() => window.open(homePagePath, "_self"), 1000);
   } catch (error) {
     formAlert.textContent = error.response.data.msg;
   }

@@ -7,7 +7,9 @@ const { StatusCodes } = require("http-status-codes");
 const { createCustomError } = require("../errors/customErrors.js");
 
 const getAllTasks = async (req, res) => {
-  const clientPbKey = Buffer.from(req.body.publicKey, "base64").toString(
+  const { publicKey: clientPublicKeyB64 } = req.query;
+
+  const clientPublicKey = Buffer.from(clientPublicKeyB64, "base64").toString(
     "utf-8"
   );
 
@@ -17,7 +19,7 @@ const getAllTasks = async (req, res) => {
     .map((task) => task.toObject())
     .map((task) => ({
       ...task,
-      name: publicEncryption(clientPbKey, Buffer.from(task.name, "utf-8")),
+      name: publicEncryption(clientPublicKey, Buffer.from(task.name, "utf-8")),
     }));
 
   res.status(StatusCodes.OK).send({ tasks: encryptedTasks });
@@ -29,15 +31,14 @@ const createTask = async (req, res) => {
     Buffer.from(req.body.name, "base64")
   );
 
-  console.log(req.body);
-
   await Task.create({ ...req.body, userID: req.user.ID });
-
   res.sendStatus(StatusCodes.CREATED);
 };
 
 const getTask = async (req, res, next) => {
-  const clientPbKey = Buffer.from(req.body.publicKey, "base64").toString(
+  const { publicKey: clientPublicKeyB64 } = req.query;
+
+  const clientPbKey = Buffer.from(clientPublicKeyB64, "base64").toString(
     "utf-8"
   );
 
@@ -81,10 +82,7 @@ const updateTask = async (req, res, next) => {
 const deleteTask = async (req, res, next) => {
   const { id } = req.params;
 
-  const task = await Task.findOneAndDelete(id);
-
-  if (!task)
-    throw createCustomError(`No Task With id : ${id}`, StatusCodes.BAD_REQUEST);
+  await Task.findOneAndRemove({ _id: id, userID: req.user.ID });
 
   res.sendStatus(StatusCodes.OK);
 };

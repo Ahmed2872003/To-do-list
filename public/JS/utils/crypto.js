@@ -1,53 +1,43 @@
+import { str2ab } from "./string.js";
+
 const validateData = (data) => data instanceof Uint8Array;
 
-function str2ab(str) {
-  const buf = new ArrayBuffer(str.length);
-  const bufView = new Uint8Array(buf);
-  for (let i = 0, strLen = str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
-}
-
-async function importRsaKey(pem) {
+async function importRsaKey(pem, isPrivate = false) {
   const pemKeyRegex = /-----(\w|\s)+-----|\n/g;
   const pemContents = pem.replace(pemKeyRegex, "");
 
-  // base64 decode the string to get the binary data
+  // Decode base64 to binary DER
   const binaryDerString = window.atob(pemContents);
-  // convert from a binary string to an ArrayBuffer
   const binaryDer = str2ab(binaryDerString);
 
-  console.log(binaryDer);
+  const algo = {
+    name: "RSA-OAEP",
+    hash: "SHA-256",
+  };
 
-  return window.crypto.subtle.importKey(
-    "spki",
-    binaryDer,
-    {
-      name: "RSA-OAEP",
-      hash: "SHA-256",
-    },
-    true,
-    ["encrypt"]
-  );
+  const format = isPrivate ? "pkcs8" : "spki";
+  const usages = isPrivate ? ["decrypt"] : ["encrypt"];
+
+  return window.crypto.subtle.importKey(format, binaryDer, algo, true, usages);
 }
 
-const publicEncrypt = async (pbKeyPem, data) => {
-  if (!validateData(data)) throw new Error("Data must be buffer");
+const publicEncrypt = async (pbKeyPem, dataBuffer) => {
+  if (!validateData(dataBuffer)) throw new Error("Data must be buffer");
 
   const encrypted = await crypto.subtle.encrypt(
     { name: "RSA-OAEP" },
     await importRsaKey(pbKeyPem),
-    data
+    dataBuffer
   );
 
   return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
 };
 
-const privateDecrypt = async (privateKeyPem, encryptedData) => {
-  const binaryEncryptedData = str2ab(atob(encryptedData));
+const privateDecrypt = async (privateKeyPem, encryptedDataBuffer) => {
+  if (!validateData(encryptedDataBuffer))
+    throw new Error("Data must be buffer");
 
-  const privateKey = await importRsaKey(privateKeyPem);
+  const privateKey = await importRsaKey(privateKeyPem, true);
 
   const decryptedArrayBuffer = await crypto.subtle.decrypt(
     {
@@ -55,22 +45,48 @@ const privateDecrypt = async (privateKeyPem, encryptedData) => {
       hash: "SHA-256",
     },
     privateKey,
-    binaryEncryptedData
+    encryptedDataBuffer
   );
 
   return new TextDecoder().decode(decryptedArrayBuffer);
 };
 
-// (async () => {
-//   const pbKey = await importRsaKey(
-//     atob(localStorage.getItem("serverPublicKey"))
-//   );
+const generateRSAKeys = async () => {
+  const keyPair = await window.crypto.subtle.generateKey(
+    {
+      name: "RSA-OAEP",
+      modulusLength: 2048, // can be 1024, 2048, or 4096
+      publicExponent: new Uint8Array([1, 0, 1]), // 0x10001
+      hash: "SHA-256",
+    },
+    true, // whether the key is extractable (can be exported)
+    ["encrypt", "decrypt"] // can also use "sign"/"verify" for RSA-PSS or RSASSA-PKCS1-v1_5
+  );
 
-//   console.log(pbKey);
+  return keyPair;
+};
 
-//   const encrypt = await publicEncrypt(pbKey, new TextEncoder().encode("Ahmed"));
+const exportKey = async (key, isPrivate = false) => {
+  const exported = await window.crypto.subtle.exportKey(
+    isPrivate ? "pkcs8" : "spki",
+    key
+  );
 
-//   console.log(encrypt);
-// })();
+  const exportedAsString = String.fromCharCode(...new Uint8Array(exported));
+  const exportedAsBase64 = btoa(exportedAsString);
 
-export default { importRsaKey, publicEncrypt, privateDecrypt };
+  const type = isPrivate ? "PRIVATE" : "PUBLIC";
+  const pem = `-----BEGIN ${type} KEY-----\n${exportedAsBase64
+    .match(/.{1,64}/g)
+    .join("\n")}\n-----END ${type} KEY-----`;
+
+  return pem;
+};
+
+export default {
+  generateRSAKeys,
+  publicEncrypt,
+  privateDecrypt,
+  importRsaKey,
+  exportKey,
+};
