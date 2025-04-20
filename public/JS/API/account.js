@@ -1,10 +1,10 @@
-import "../API/axios.js";
+import "./axios.js";
 
-import userService from "../services/user.js";
+import userAPI from "./user.js";
 
 const removeAccount = async () => {
   await axios.delete("/user");
-  await userService.logout();
+  await userAPI.logout();
 };
 
 export default { removeAccount };

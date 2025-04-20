@@ -1,4 +1,4 @@
-import "../API/axios.js";
+import "./axios.js";
 
 const signin = async (user) => {
   const { data } = await axios.post("/auth/signin", user);
@@ -6,6 +6,12 @@ const signin = async (user) => {
   localStorage.setItem("username", user.username);
 
   return data;
+};
+
+const getUser = async () => {
+  const { data: user } = await axios.get("/user");
+
+  return user;
 };
 
 const signup = async (user) => {
@@ -16,15 +22,10 @@ const signup = async (user) => {
 
 const logout = async () => {
   await axios.post("/auth/logout");
-  localStorage.removeItem("username");
-  localStorage.removeItem("serverPublicKey");
+
+  localStorage.clear();
 
   if (window.location.pathname !== "/") window.open("/", "_self");
 };
 
-const removeAccount = async () => {
-  await axios.delete("/user");
-  await logout();
-};
-
-export default { signin, signup, logout };
+export default { getUser, signin, signup, logout };

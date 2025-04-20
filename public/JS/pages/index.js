@@ -1,5 +1,5 @@
-import userService from "../services/user.js";
-import keyService from "../services/key.js";
+import userAPI from "../API/user.js";
+import keyAPI from "../API/key.js";
 
 import loadKeys from "../utils/load-keys.js";
 
@@ -16,7 +16,15 @@ const togglerInput = document.getElementById("toggleVisiblity");
 const homePagePath = "../../pages/home.html";
 
 const singleSigninCheck = async () => {
-  if (localStorage.getItem("username")) window.open(homePagePath, "_self");
+  try {
+    const user = await userAPI.getUser();
+
+    localStorage.setItem("username", user.username);
+
+    window.location.href = "../../pages/home.html";
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 singleSigninCheck();
@@ -25,10 +33,9 @@ loginBtn.onclick = async (event) => {
   event.preventDefault();
   const [username, password] = [usernameInput.value, passInput.value];
   try {
-    const resBody = await userService.signin({ username, password });
+    const resBody = await userAPI.signin({ username, password });
 
-    const { publicKey: serverPublicKey } =
-      await keyService.getServerPublickKey();
+    const { publicKey: serverPublicKey } = await keyAPI.getServerPublickKey();
 
     localStorage.setItem("serverPublicKey", serverPublicKey);
 
@@ -48,7 +55,7 @@ signupBtn.onclick = async (event) => {
   event.preventDefault();
   const [username, password] = [usernameInput.value, passInput.value];
   try {
-    const resBody = await userService.signup({ username, password });
+    const resBody = await userAPI.signup({ username, password });
 
     formAlert.textContent = resBody.msg;
     formAlert.classList.add("text-success");

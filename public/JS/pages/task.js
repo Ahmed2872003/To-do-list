@@ -1,4 +1,4 @@
-import taskService from "../services/task.js";
+import taskAPI from "../API/task.js";
 
 import loadKeys from "../utils/load-keys.js";
 
@@ -23,7 +23,7 @@ loadKeys()
 function startTaskScript() {
   const showTask = async () => {
     try {
-      const resBody = await taskService.getTask(id);
+      const resBody = await taskAPI.getTask(id);
 
       const { _id: taskID, completed, name } = resBody.task;
 
@@ -52,7 +52,7 @@ function startTaskScript() {
       const taskName = taskNameDOM.value;
       const taskCompleted = taskCompletedDOM.checked;
 
-      await taskService.updateTask(id, {
+      await taskAPI.updateTask(id, {
         name: taskName,
         completed: taskCompleted,
       });

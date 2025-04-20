@@ -1,7 +1,7 @@
 import "../API/axios.js";
-import userService from "../services/user.js";
-import accountService from "../services/account.js";
-import taskService from "../services/task.js";
+import userAPI from "../API/user.js";
+import accountAPI from "../API/account.js";
+import taskService from "../API/task.js";
 
 import loadKeys from "../utils/load-keys.js";
 
@@ -57,7 +57,7 @@ function startHomeScript() {
   deleteAccountBtn.onclick = async () => {
     if (confirm("Are you sure that you want to delete your account")) {
       try {
-        await accountService.removeAccount();
+        await accountAPI.removeAccount();
       } catch (error) {
         formAlertDOM.innerText = error.response.data.msg;
         removeMsg();
@@ -160,7 +160,7 @@ function startHomeScript() {
   // signout button
 
   signoutBtn.onclick = async () => {
-    await userService.logout();
+    await userAPI.logout();
   };
 
   // deleteAllTasksBtn
