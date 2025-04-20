@@ -15,15 +15,22 @@ const userRouter = require("./routes/user.js");
 const authRouter = require("./routes/auth.js");
 const keyRouter = require("./routes/keys.js");
 
+// DB connection
 const connectDB = require("./db/connect.js");
 
+// Middlewares
 const notFound = require("./middleware/notFound.js");
 
 const errorHandler = require("./middleware/errorHandler.js");
 
 const authenticationMiddleware = require("./middleware/auth.js");
 
-// Middlewares
+// Security middlewares
+const { xss } = require("express-xss-sanitizer");
+const helmet = require("helmet");
+
+app.use(xss());
+app.use(helmet());
 app.use(express.static("./public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
